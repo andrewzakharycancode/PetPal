@@ -4,6 +4,18 @@ from datetime import datetime
 # Instantiate a SQLAlchemy object to interact with the database
 db = SQLAlchemy()
 
+def connect_to_db(app, db_uri='postgresql:///petpal'):
+    """Connect the database to our Flask app."""
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ECHO'] = False
+
+    db.app = app
+    db.init_app(app)
+
+    print('Connected to the database!')
+
 # User model representing the users table in the database
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
