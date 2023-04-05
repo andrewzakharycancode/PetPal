@@ -13,12 +13,6 @@ app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
 
-# Your Flask routes and other code go here
-
-if __name__ == "__main__":
-    connect_to_db(app)
-    app.run(host="0.0.0.0", debug=True)
-
 # Show homepage
 @app.route('/')
 def homepage():
@@ -162,8 +156,6 @@ def logout():
     flash('Logged out successfully.')
     return redirect('/')
 
-if name == "main":
+if __name__ == "__main__":
     connect_to_db(app)
-app.run(host="0.0.0.0", debug=True)
-
-
+    app.run(host="0.0.0.0", debug=True)
