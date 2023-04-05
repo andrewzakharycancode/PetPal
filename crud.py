@@ -1,4 +1,4 @@
-from model import db, User, Pet, HealthRecord, Vet, FavoriteVet
+from model import db, User, Pet, HealthRecord, Vet, FavoriteVet, connect_to_db
 
 # User CRUD operations
 def create_user(username, email, password_hash, first_name, last_name, phone_number=None):
@@ -141,4 +141,9 @@ def delete_favorite_vet(favorite_vet):
     """Delete a favorite vet."""
     db.session.delete(favorite_vet)
     db.session.commit()
+
+if __name__ == "__main__":
+    from flask import Flask
+    app = Flask(__name__)
+    connect_to_db(app)
 
