@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Add Health Record for {{ pet.name }}</h1>
+
+<form action="/add_health_record" method="POST">
+    <input type="hidden" name="pet_id" value="{{ pet.id }}">
+    <label for="record_date">Record Date:</label>
+    <input type="date" name="record_date" required>
+    <br>
+    <label for="weight">Weight (lbs):</label>
+    <input type="number" name="weight" step="0.1">
+    <br>
+    <label for="vaccination_status">Vaccination Status:</label>
+    <input type="text" name="vaccination_status">
+    <br>
+    <label for="notes">Notes:</label>
+    <textarea name="notes"></textarea>
+    <br>
+    <input type="submit" value="Add Record">
+</form>
+
+{% endblock %}

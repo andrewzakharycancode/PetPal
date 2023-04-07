@@ -1,12 +1,13 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_all_users, update_user, delete_user,
-                  create_pet, get_pet_by_id, get_all_pets, update_pet, delete_pet,
-                  create_health_record, get_health_record_by_id, get_all_health_records,
-                  update_health_record, delete_health_record,
-                  create_vet, get_vet_by_id, get_all_vets, update_vet, delete_vet,
-                  create_favorite_vet, get_favorite_vet_by_id, get_all_favorite_vets,
-                  update_favorite_vet, delete_favorite_vet)
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_all_users, update_user, delete_user ) 
+                #   get_all_users, update_user, delete_user,
+                #   create_pet, get_pet_by_id, get_all_pets, update_pet, delete_pet,
+                #   create_health_record, get_health_record_by_id, get_all_health_records,
+                #   update_health_record, delete_health_record,
+                #   create_vet, get_vet_by_id, get_all_vets, update_vet, delete_vet,
+                #   create_favorite_vet, get_favorite_vet_by_id, get_all_favorite_vets,
+                #   update_favorite_vet, delete_favorite_vet)
 from jinja2 import StrictUndefined
 
 app = Flask(__name__)
@@ -22,18 +23,20 @@ def homepage():
 @app.route('/register', methods=['POST'])
 def register_user():
     email = request.form['email']
-    password = request.form['password']
+    password_hash = request.form['password']
     first_name = request.form['first_name']
     last_name = request.form['last_name']
+    username = request.form['username']
+    phone_number = request.form['phone_number']
+     
 
-    user = crud.get_user_by_email(email)
-
+    user = get_user_by_email(email)
+    
     if user:
-        flash('An account with this email already exists. Please log in.')
+       flash('An account with this email already exists. Please log in.')
     else:
-        crud.create_user(first_name, last_name, email, password)
+        create_user(username, email, password_hash, first_name, last_name, phone_number)
         flash('Account created! Please log in.')
-
     return redirect('/')
 
 # Log in a user
@@ -42,7 +45,7 @@ def login_user():
     email = request.form['email']
     password = request.form['password']
 
-    user = crud.get_user_by_email(email)
+    user = get_user_by_email(email)
 
     if not user or not user.check_password(password):
         flash('Invalid email or password. Please try again.')
@@ -59,7 +62,7 @@ def show_dashboard():
         flash('Please log in to view your dashboard.')
         return redirect('/')
 
-    user = crud.get_user_by_id(session['user_id'])
+    user = get_user_by_id(session['user_id'])
 
     return render_template('dashboard.html', user=user)
 
@@ -70,7 +73,7 @@ def view_pets():
         flash('Please log in to view your pets.')
         return redirect('/')
 
-    user = crud.get_user_by_id(session['user_id'])
+    user = get_user_by_id(session['user_id'])
 
     return render_template('pets.html', user=user)
 
@@ -97,7 +100,7 @@ def add_pet():
 # View health records for a specific pet
 @app.route('/health_records/<int:pet_id>')
 def view_health_records(pet_id):
-    pet = crud.get_pet_by_id(pet_id)
+    pet = get_pet_by_id(pet_id)
 
     return render_template('health_records.html', pet=pet)
 
@@ -139,12 +142,12 @@ def add_favorite_vet():
     return redirect('/')
 
 
-user_id = session['user_id']
-vet_id = request.form['vet_id']
-notes = request.form['notes']
-reviews = request.form['reviews']
+#user_id = session['user_id']
+#vet_id = request.form['vet_id']
+#notes = request.form['notes']
+#reviews = request.form['reviews']
 
-favorite_vet = crud.create_favorite_vet(user_id, vet_id, notes, reviews)
+#favorite_vet = crud.create_favorite_vet(user_id, vet_id, notes, reviews)
 
 #flash('Vet added to your favorite vets.')
 #return redirect('/favorite_vets')

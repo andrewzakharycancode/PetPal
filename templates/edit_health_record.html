@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Edit Health Record for {{ health_record.pet.name }}</h1>
+
+<form action="/edit_health_record" method="POST">
+    <input type="hidden" name="health_record_id" value="{{ health_record.id }}">
+    <label for="record_date">Record Date:</label>
+    <input type="date" name="record_date" value="{{ health_record.record_date }}" required>
+    <br>
+    <label for="weight">Weight (lbs):</label>
+    <input type="number" name="weight" value="{{ health_record.weight }}" step="0.1">
+    <br>
+    <label for="vaccination_status">Vaccination Status:</label>
+    <input type="text" name="vaccination_status" value="{{ health_record.vaccination_status }}">
+    <br>
+    <label for="notes">Notes:</label>
+    <textarea name="notes">{{ health_record.notes }}</textarea>
+    <br>
+    <input type="submit" value="Save Changes">
+</form>
+
+{% endblock %}

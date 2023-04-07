@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ pet.name }}'s Health Records</h1>
+
+{% for record in pet.health_records %}
+    <div>
+        <h3>{{ record.record_date }}</h3>
+        <p>Weight: {{ record.weight }}</p>
+        <p>Vaccination Status: {{ record.vaccination_status }}</p>
+        <p>Notes: {{ record.notes }}</p>
+    </div>
+{% endfor %}
+{% endblock %}
