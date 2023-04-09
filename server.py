@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_all_users, update_user, delete_user ) 
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, get_all_users, update_user, delete_user ) 
                 #   get_all_users, update_user, delete_user,
                 #   create_pet, get_pet_by_id, get_all_pets, update_pet, delete_pet,
                 #   create_health_record, get_health_record_by_id, get_all_health_records,
@@ -20,24 +20,46 @@ def homepage():
     return render_template('homepage.html')
 
 # Register a new user
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register_user():
+    if request.method == 'GET':
+        return render_template('register.html')
+
     email = request.form['email']
     password_hash = request.form['password']
     first_name = request.form['first_name']
     last_name = request.form['last_name']
     username = request.form['username']
     phone_number = request.form['phone_number']
-     
 
     user = get_user_by_email(email)
-    
+
     if user:
-       flash('An account with this email already exists. Please log in.')
+        flash('An account with this email already exists. Please log in.')
     else:
         create_user(username, email, password_hash, first_name, last_name, phone_number)
         flash('Account created! Please log in.')
+
     return redirect('/')
+
+# Get user by email
+@app.route('/api/user', methods=['GET'])
+def get_user():
+    email = request.args.get('email')
+    if not email:
+        return jsonify({'error': 'Email is required.'}), 400
+
+    user = get_user_by_email(email)
+    if not user:
+        return jsonify({'error': 'User not found.'}), 404
+
+    return jsonify({
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email
+    })
+
 
 # Log in a user
 @app.route('/login', methods=['POST'])
