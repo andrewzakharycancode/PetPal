@@ -42,6 +42,12 @@ def register_user():
 
     return redirect('/')
 
+# About
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
 # Get user by email
 @app.route('/api/user', methods=['GET'])
 def get_user():
@@ -68,6 +74,7 @@ def login_user():
     password = request.form['password']
 
     user = get_user_by_email(email)
+    print(f"User: {user}")
 
     if not user or not user.check_password(password):
         flash('Invalid email or password. Please try again.')
@@ -77,16 +84,59 @@ def login_user():
         flash(f'Welcome, {user.first_name}!')
         return redirect('/dashboard')
 
-# Show user dashboard
+# @app.route('/login', methods=['GET', 'POST'])
+# def login_user():
+#     if request.method == 'POST':
+#         email = request.form['email']
+#         password = request.form['password']
+#         user = User.query.filter_by(email=email).first()
+#         if not user or not user.check_password(password):
+#             flash('Invalid email or password', 'error')
+#             return redirect(url_for('login_user'))
+#         login_user(user)
+#         return redirect(url_for('dashboard'))
+#     return render_template('login.html')
+
+
+# # Log in a user
+# @app.route('/login', methods=['POST'])
+# def login_user():
+#     email = request.form['email']
+#     password = request.form['password']
+
+#     user = get_user_by_email(email)
+
+#     if not user or not user.check_password(password):
+#         flash('Invalid email or password. Please try again.')
+#         return redirect('/')
+#     else:
+#         session['user_id'] = user.id
+#         flash(f'Welcome, {user.first_name}!')
+#         return redirect('/dashboard')
+
+
+    
+
 @app.route('/dashboard')
-def show_dashboard():
+def dashboard():
     if 'user_id' not in session:
         flash('Please log in to view your dashboard.')
         return redirect('/')
 
-    user = get_user_by_id(session['user_id'])
+    pets = Pet.query.filter_by(user_id=session["user_id"]).all()
+    return render_template('dashboard.html', pets=pets)
 
-    return render_template('dashboard.html', user=user)
+
+# # Show user dashboard
+# @app.route('/dashboard')
+# def show_dashboard():
+#     if 'user_id' not in session:
+#         flash('Please log in to view your dashboard.')
+#         return redirect('/')
+
+#     user = get_user_by_id(session['user_id'])
+
+#     return render_template('dashboard.html', user=user)
 
 # View all pets of the user
 @app.route('/pets')

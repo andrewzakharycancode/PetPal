@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from werkzeug.security import check_password_hash
 
 # Instantiate a SQLAlchemy object to interact with the database
 db = SQLAlchemy()
@@ -28,7 +29,12 @@ class User(db.Model):
     phone_number = db.Column(db.String(20), nullable=True)
 
     # Define a one-to-many relationship between User and Pet
-    pets = db.relationship("Pet", backref="user", lazy=True)
+    pets = db.relationship("Pet", back_populates="user")
+
+    def check_password(self, password):
+        return self.password_hash == password
+
+    
 
 # Pet model representing the pets table in the database
 class Pet(db.Model):
@@ -40,6 +46,8 @@ class Pet(db.Model):
     breed = db.Column(db.String(80), nullable=True)
     birthdate = db.Column(db.Date, nullable=True)
     photo = db.Column(db.String(255), nullable=True)
+
+    user = db.relationship("User", back_populates="pets")
 
     # Define a one-to-many relationship between Pet and HealthRecord
     health_records = db.relationship("HealthRecord", backref="pet", lazy=True)
@@ -76,3 +84,13 @@ class FavoriteVet(db.Model):
     vet_id = db.Column(db.Integer, db.ForeignKey("vets.id"), nullable=False)
     notes = db.Column(db.Text, nullable=True)
     reviews = db.Column(db.Text, nullable=True)
+
+
+if __name__ == "__main__":
+    from server import app
+
+    # Call connect_to_db(app, echo=False) if your program output gets
+    # too annoying; this will tell SQLAlchemy not to print out every
+    # query it executes.
+
+    connect_to_db(app)

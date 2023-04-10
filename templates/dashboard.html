@@ -1,14 +1,18 @@
+
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{ user.first_name }}'s Dashboard</h1>
+  <h1>Dashboard</h1>
 
-<h2>Your Pets</h2>
-{% for pet in user.pets %}
-    <div>
-        <h3>{{ pet.name }}</h3>
-        <p>Species: {{ pet.species }}</p>
-        <p>Breed: {{ pet.breed }}</p>
-    </div>
-{% endfor %}
+  <h2>Your Pets</h2>
+  <ul>
+    {% for pet in pets %}
+      <li>
+        <a href="{{ url_for('view_pet_health_records', pet_id=pet.id) }}">{{ pet.name }}</a>
+        <a href="{{ url_for('add_health_record', pet_id=pet.id) }}">Add Health Record</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <a href="{{ url_for('add_pet') }}">Add a new pet</a>
 {% endblock %}
