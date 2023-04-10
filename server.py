@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, get_all_users, update_user, delete_user ) 
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email) 
                 #   get_all_users, update_user, delete_user,
                 #   create_pet, get_pet_by_id, get_all_pets, update_pet, delete_pet,
                 #   create_health_record, get_health_record_by_id, get_all_health_records,
