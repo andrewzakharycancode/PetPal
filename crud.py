@@ -1,3 +1,4 @@
+from typing import List
 from model import db, User, Pet, HealthRecord, Vet, FavoriteVet, connect_to_db
 
 # User CRUD operations
@@ -39,8 +40,6 @@ def delete_user(user):
 def create_pet(user_id, name, species, breed=None, birthdate=None, photo=None):
     """Create and return a new pet."""
     pet = Pet(user_id=user_id, name=name, species=species, breed=breed, birthdate=birthdate, photo=photo)
-    # db.session.add(pet)
-    # db.session.commit()
 
     return pet
 
@@ -58,15 +57,20 @@ def update_pet(pet, **kwargs):
         setattr(pet, key, value)
     db.session.commit()
 
+def get_health_records_by_pet(pet_id: int) -> List[HealthRecord]:
+    """Return all health records for a specific pet."""
+    return HealthRecord.query.filter(HealthRecord.pet_id == pet_id).all()
+   
+
 def delete_pet(pet):
     """Delete a pet."""
     db.session.delete(pet)
     db.session.commit()
 
 # HealthRecord CRUD operations
-def create_health_record(pet, record_date, weight=None, vaccination_status=None, notes=None):
+def create_health_record(pet_id, record_date, weight=None, vaccination_status=None, notes=None):
     """Create and return a new health record."""
-    health_record = HealthRecord(pet=pet, record_date=record_date, weight=weight,
+    health_record = HealthRecord(pet_id=pet_id, record_date=record_date, weight=weight,
                                   vaccination_status=vaccination_status, notes=notes)
     db.session.add(health_record)
     db.session.commit()

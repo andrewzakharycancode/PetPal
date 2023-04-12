@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet) 
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet) 
 
 app = Flask(__name__)
 app.secret_key = "dev"
@@ -90,17 +90,6 @@ def dashboard():
     return render_template('dashboard.html', pets=pets)
 
 
-# # Show user dashboard
-# @app.route('/dashboard')
-# def show_dashboard():
-#     if 'user_id' not in session:
-#         flash('Please log in to view your dashboard.')
-#         return redirect('/')
-
-#     user = get_user_by_id(session['user_id'])
-
-#     return render_template('dashboard.html', user=user)
-
 # View all pets of the user
 @app.route('/pets')
 def view_pets():
@@ -132,50 +121,43 @@ def add_pet():
     flash(f"{pet_name} has been added to your pets!")
     return redirect("/dashboard")
 
+# @app.route('/health_records/<int:pet_id>')
+# def view_health_records(pet_id):
+#     pet = get_pet_by_id(pet_id)
+#     health_records = get_health_records_by_pet(pet_id)
+#     return render_template('health_records.html', pet=pet, health_records=health_records)
 
+# @app.route('/health_records/<int:pet_id>')
+# def view_health_records(pet_id):
+#     pet = get_pet_by_id(pet_id)
 
-# @app.route('/add_pet', methods=['POST'])
-# def add_pet():
-#     if 'user_id' not in session:
-#         flash('Please log in to add a pet.')
-#         return redirect('/')
+#     return render_template('health_records.html', pet=pet)
 
-#     user_id = session['user_id']
-#     name = request.form['name']
-#     species = request.form['species']
-#     breed = request.form['breed']
-#     birthdate = request.form['birthdate']
-#     photo = request.form['photo']
-
-#     pet = crud.create_pet(user_id, name, species, breed, birthdate, photo)
-
-#     flash(f'{pet.name} has been added to your pets.')
-#     return redirect('/pets')
-
-# Add the get route
-# @app.route('/add_pet', methods=['POST'])
-
-# View health records for a specific pet
-@app.route('/health_records/<int:pet_id>')
-def view_health_records(pet_id):
+@app.route('/add_health_record/<int:pet_id>', methods=['GET', 'POST'])
+def add_health_record(pet_id):
     pet = get_pet_by_id(pet_id)
 
-    return render_template('health_records.html', pet=pet)
+    if request.method == 'GET':
+        return render_template('add_health_record.html', pet=pet)
 
-# Add a health record for a specific pet
-@app.route('/add_health_record', methods=['POST'])
-def add_health_record():
-    pet_id = request.form['pet_id']
-    record_date = request.form['record_date']
-    weight = request.form['weight']
+    record_date = request.form['record_date'] #need to be a dat/time object
+    weight = request.form['weight'] #needs to be a float
     vaccination_status = request.form['vaccination_status']
     notes = request.form['notes']
 
-    health_record = crud.create_health_record(pet_id, record_date, weight, vaccination_status, notes)
-
+    health_record = create_health_record(pet_id, record_date, weight, vaccination_status, notes)
+    print(health_record)
     flash('Health record added.')
 
     return redirect(url_for('view_health_records', pet_id=pet_id))
+
+@app.route("/view_health_records/<int:pet_id>")
+def view_health_records(pet_id):
+    health_records= get_health_records_by_pet(pet_id)
+    pet = get_pet_by_id(pet_id)
+    return render_template("health_records.html", pet=pet, health_records=health_records)
+
+
 
 # Search for vets
 @app.route('/search_vets')
@@ -189,8 +171,6 @@ def view_favorite_vets():
         flash('Please log in to view your favorite vets.')
     return redirect('/')
 
-#user = crud.get_user_by_id(session['user_id'])
-#return render_template('favorite_vets.html', user=user)
 
 # Add a vet to the user's favorite vets
 @app.route('/add_favorite_vet', methods=['POST'])
@@ -199,16 +179,6 @@ def add_favorite_vet():
         flash('Please log in to add a favorite vet.')
     return redirect('/')
 
-
-#user_id = session['user_id']
-#vet_id = request.form['vet_id']
-#notes = request.form['notes']
-#reviews = request.form['reviews']
-
-#favorite_vet = crud.create_favorite_vet(user_id, vet_id, notes, reviews)
-
-#flash('Vet added to your favorite vets.')
-#return redirect('/favorite_vets')
 
 #Log out the user
 @app.route('/logout')
