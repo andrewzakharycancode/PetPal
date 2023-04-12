@@ -1,6 +1,7 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
 from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet) 
+import requests
 
 app = Flask(__name__)
 app.secret_key = "dev"
@@ -162,7 +163,17 @@ def view_health_records(pet_id):
 # Search for vets
 @app.route('/search_vets')
 def search_vets():
+    location = request.form.get("location") #search bar html wit input field of location and search vets html that shows the vets after rendered
+    url = f"https://api.yelp.com/v3/businesses/search?location={location}&term=vet&sort_by=best_match&limit=20"
+
+    headers = {"accept": "application/json"}
+
+    response = requests.get(url, headers=headers)
+
+    print(response.text) #Some things need to be made to parse the information
     return render_template('search_vets.html')
+
+
 
 #View user's favorite vets
 @app.route('/favorite_vets')
