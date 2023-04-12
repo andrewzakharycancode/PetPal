@@ -36,11 +36,11 @@ def delete_user(user):
     db.session.commit()
 
 # Pet CRUD operations
-def create_pet(user, name, species, breed=None, birthdate=None, photo=None):
+def create_pet(user_id, name, species, breed=None, birthdate=None, photo=None):
     """Create and return a new pet."""
-    pet = Pet(user=user, name=name, species=species, breed=breed, birthdate=birthdate, photo=photo)
-    db.session.add(pet)
-    db.session.commit()
+    pet = Pet(user_id=user_id, name=name, species=species, breed=breed, birthdate=birthdate, photo=photo)
+    # db.session.add(pet)
+    # db.session.commit()
 
     return pet
 
@@ -152,4 +152,3 @@ if __name__ == "__main__":
     from flask import Flask
     app = Flask(__name__)
     connect_to_db(app)
-

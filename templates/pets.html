@@ -1,14 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{ user.first_name }}'s Pets</h1>
+<h1>Create an Account</h1>
 
-{% for pet in user.pets %}
-    <div>
-        <h3>{{ pet.name }}</h3>
-        <p>Species: {{ pet.species }}</p>
-        <p>Breed: {{ pet.breed }}</p>
-        <a href="{{ url_for('view_health_records', pet_id=pet.id) }}">View Health Records</a>
-    </div>
-{% endfor %}
+<form action="/register" method="POST">
+    <label for="email">Email:</label>
+    <br>
+    <input type="text" name="email" required>
+    <br><br>
+    <label for="password">Password:</label>
+    <br>
+    <input type="password" name="password" required>
+    <br><br>
+    <label for="first_name">First Name:</label>
+    <br>
+    <input type="text" name="first_name" required>
+    <br><br>
+    <label for="last_name">Last Name:</label>
+    <br>
+    <input type="text" name="last_name" required>
+    <br><br>
+    <label for="username">Username:</label>
+    <br>
+    <input type="text" name="username" required>
+    <br><br>
+    <label for="phone_number">Phone Number:</label>
+    <br>
+    <input type="text" name="phone_number">
+    <br><br>
+    <input type="submit" value="Create Account">
+</form>
 {% endblock %}

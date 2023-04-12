@@ -1,18 +1,11 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email) 
-                #   get_all_users, update_user, delete_user,
-                #   create_pet, get_pet_by_id, get_all_pets, update_pet, delete_pet,
-                #   create_health_record, get_health_record_by_id, get_all_health_records,
-                #   update_health_record, delete_health_record,
-                #   create_vet, get_vet_by_id, get_all_vets, update_vet, delete_vet,
-                #   create_favorite_vet, get_favorite_vet_by_id, get_all_favorite_vets,
-                #   update_favorite_vet, delete_favorite_vet)
-from jinja2 import StrictUndefined
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet) 
 
 app = Flask(__name__)
 app.secret_key = "dev"
-app.jinja_env.undefined = StrictUndefined
+from jinja2 import Environment, StrictUndefined
+
 
 # Show homepage
 @app.route('/')
@@ -84,36 +77,6 @@ def login_user():
         flash(f'Welcome, {user.first_name}!')
         return redirect('/dashboard')
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login_user():
-#     if request.method == 'POST':
-#         email = request.form['email']
-#         password = request.form['password']
-#         user = User.query.filter_by(email=email).first()
-#         if not user or not user.check_password(password):
-#             flash('Invalid email or password', 'error')
-#             return redirect(url_for('login_user'))
-#         login_user(user)
-#         return redirect(url_for('dashboard'))
-#     return render_template('login.html')
-
-
-# # Log in a user
-# @app.route('/login', methods=['POST'])
-# def login_user():
-#     email = request.form['email']
-#     password = request.form['password']
-
-#     user = get_user_by_email(email)
-
-#     if not user or not user.check_password(password):
-#         flash('Invalid email or password. Please try again.')
-#         return redirect('/')
-#     else:
-#         session['user_id'] = user.id
-#         flash(f'Welcome, {user.first_name}!')
-#         return redirect('/dashboard')
-
 
     
 
@@ -150,24 +113,47 @@ def view_pets():
     return render_template('pets.html', user=user)
 
 # Add a pet to the user's account
-@app.route('/add_pet', methods=['POST'])
+
+@app.route("/add_pet", methods=["POST"])
 def add_pet():
-    if 'user_id' not in session:
-        flash('Please log in to add a pet.')
-        return redirect('/')
+    """Add a pet for the logged-in user."""
 
-    user_id = session['user_id']
-    name = request.form['name']
-    species = request.form['species']
-    breed = request.form['breed']
-    birthdate = request.form['birthdate']
-    photo = request.form['photo']
+    # Get the form data
+    pet_name = request.form["pet_name"]
+    pet_species = request.form["pet_species"] 
+    user_id = session["user_id"]
 
-    pet = crud.create_pet(user_id, name, species, breed, birthdate, photo)
+    # Create a new pet and add it to the database
+    # create_pet = Pet(name=pet_name, species=pet_species, owner_id=user_id)  # Change this line
+    new_pet = create_pet(user_id, pet_name, pet_species)
+    db.session.add(new_pet)
+    db.session.commit()
 
-    flash(f'{pet.name} has been added to your pets.')
-    return redirect('/pets')
+    flash(f"{pet_name} has been added to your pets!")
+    return redirect("/dashboard")
 
+
+
+# @app.route('/add_pet', methods=['POST'])
+# def add_pet():
+#     if 'user_id' not in session:
+#         flash('Please log in to add a pet.')
+#         return redirect('/')
+
+#     user_id = session['user_id']
+#     name = request.form['name']
+#     species = request.form['species']
+#     breed = request.form['breed']
+#     birthdate = request.form['birthdate']
+#     photo = request.form['photo']
+
+#     pet = crud.create_pet(user_id, name, species, breed, birthdate, photo)
+
+#     flash(f'{pet.name} has been added to your pets.')
+#     return redirect('/pets')
+
+# Add the get route
+# @app.route('/add_pet', methods=['POST'])
 
 # View health records for a specific pet
 @app.route('/health_records/<int:pet_id>')

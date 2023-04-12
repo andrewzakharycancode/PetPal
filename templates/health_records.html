@@ -1,14 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{ pet.name }}'s Health Records</h1>
+  <h1>{{ pet.name }}'s Health Records</h1>
 
-{% for record in pet.health_records %}
-    <div>
-        <h3>{{ record.record_date }}</h3>
-        <p>Weight: {{ record.weight }}</p>
-        <p>Vaccination Status: {{ record.vaccination_status }}</p>
-        <p>Notes: {{ record.notes }}</p>
-    </div>
-{% endfor %}
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Weight</th>
+        <th>Vaccination Status</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in pet.health_records %}
+        <tr>
+          <td>{{ record.date }}</td>
+          <td>{{ record.weight }}</td>
+          <td>{{ record.vaccination_status }}</td>
+          <td>{{ record.notes }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}

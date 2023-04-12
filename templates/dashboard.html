@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -8,11 +7,20 @@
   <ul>
     {% for pet in pets %}
       <li>
-        <a href="{{ url_for('view_pet_health_records', pet_id=pet.id) }}">{{ pet.name }}</a>
+        <a href="{{ url_for('view_health_records', pet_id=pet.id) }}">{{ pet.name }}</a>
         <a href="{{ url_for('add_health_record', pet_id=pet.id) }}">Add Health Record</a>
       </li>
     {% endfor %}
   </ul>
 
-  <a href="{{ url_for('add_pet') }}">Add a new pet</a>
+  <h2>Add a new pet</h2>
+  <form action="{{ url_for('add_pet') }}" method="POST">
+      <label for="pet_name">Pet Name:</label>
+      <input type="text" name="pet_name" required>
+      <br><br>
+      <label for="pet_type">Pet Species:</label>
+      <input type="text" name="pet_species" required>
+      <br><br>
+      <input type="submit" value="Add Pet">
+  </form>
 {% endblock %}
