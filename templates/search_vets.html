@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Search Vets</h1>
+    
+    <form action="/vetfinder" method="POST">
+        <div class="mb-3">
+            <label for="location" class="form-label">Location:</label>
+            <input type="text" name="location" class="form-control" required>
+        </div>
+        <input type="submit" value="Search" class="btn btn-primary">
+    </form>
+    
+    <hr>
+
+    <div class="row">
+        {% for business in businesses %}
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ business.name }}</h5>
+                    <p class="card-text">{{ business.location.address1 }}, {{ business.location.city }}, {{ business.location.zip_code }}</p>
+                    <p class="card-text">Phone: {{ business.phone }}</p>
+                    <a href="{{ business.url }}" class="card-link" target="_blank">View on Yelp</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
