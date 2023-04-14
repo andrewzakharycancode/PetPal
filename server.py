@@ -190,8 +190,6 @@ def search_vets():
         return render_template('search_vets.html')
 
 
-
-
 #View user's favorite vets
 @app.route('/favorite_vets')
 def view_favorite_vets():
