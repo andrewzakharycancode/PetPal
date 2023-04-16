@@ -1,4 +1,4 @@
-from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify)
+from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify, g)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
 from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet) 
 import requests
@@ -16,10 +16,26 @@ app.secret_key = "dev"
 from jinja2 import Environment, StrictUndefined
 
 
-# Show homepage
+# # Show homepage
+# @app.route('/')
+# def homepage():
+#     return render_template('homepage.html')
+
+@app.before_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_user_by_id(user_id)
+
 @app.route('/')
 def homepage():
-    return render_template('homepage.html')
+    if g.user:
+        return redirect('/dashboard')
+    else:
+        return render_template('homepage.html')
 
 # Register a new user
 @app.route('/register', methods=['GET', 'POST'])
