@@ -4,7 +4,7 @@
 
 <h1>Edit Health Record for {{ health_record.pet.name }}</h1>
 
-<form action="/edit_health_record" method="POST">
+<form action="/edit_health_record/{{health_record.id}}" method="POST">
     <input type="hidden" name="health_record_id" value="{{ health_record.id }}">
     <label for="record_date">Record Date:</label>
     <input type="date" name="record_date" value="{{ health_record.record_date }}" required>

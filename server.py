@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify, g)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet) 
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record) 
 import requests
 import os
 from dotenv import load_dotenv
@@ -182,7 +182,25 @@ def view_health_records(pet_id):
     pet = get_pet_by_id(pet_id)
     return render_template("health_records.html", pet=pet, health_records=health_records)
 
+@app.route('/edit_health_record/<int:record_id>', methods=['GET', 'POST'])
+def edit_health_record(record_id):
+    health_record = get_health_record_by_id(record_id)
 
+    if request.method == 'GET':
+        return render_template('edit_health_record.html', health_record=health_record)
+
+    record_date = request.form['record_date'] 
+    weight = request.form['weight'] 
+    vaccination_status = request.form['vaccination_status']
+    notes = request.form['notes']
+
+    update_health_record(health_record, record_date=record_date, weight=weight, vaccination_status=vaccination_status, notes=notes)
+    flash('Health record updated.')
+
+    return redirect('/dashboard')  # Redirect to the Dashboard after updating the health record
+
+def get_health_record_by_id(record_id):
+    return HealthRecord.query.get(record_id)
 
 # Search for vets
 @app.route('/vetfinder', methods=['GET', 'POST'])

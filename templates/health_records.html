@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ pet.name }}'s Health Records</h1>
+  <h1>Health Records for {{ pet.name }}</h1>
+
+  <!-- Add a "New Health Record" button -->
+  <a href="{{ url_for('add_health_record', pet_id=pet.id) }}" class="btn btn-primary">New Health Record</a>
 
   <table>
     <thead>
@@ -10,15 +13,20 @@
         <th>Weight</th>
         <th>Vaccination Status</th>
         <th>Notes</th>
+        <th>Actions</th> <!-- Add a new header for actions -->
       </tr>
     </thead>
     <tbody>
-      {% for record in pet.health_records %}
+      {% for record in health_records %}
         <tr>
-          <td>{{ record.date }}</td>
+          <td>{{ record.record_date.strftime('%B %d, %Y') }}</td>
           <td>{{ record.weight }}</td>
           <td>{{ record.vaccination_status }}</td>
           <td>{{ record.notes }}</td>
+          <td>
+            <!-- Add an "Edit" button for each health record -->
+            <a href="{{ url_for('edit_health_record', record_id=record.id) }}" class="btn btn-sm btn-primary">Edit</a>
+          </td>
         </tr>
       {% endfor %}
     </tbody>
