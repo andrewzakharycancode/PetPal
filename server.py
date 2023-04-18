@@ -167,10 +167,11 @@ def add_health_record(pet_id):
 
     record_date = request.form['record_date'] #need to be a dat/time object
     weight = request.form['weight'] #needs to be a float
+    weight_unit = request.form['weight_unit']
     vaccination_status = request.form['vaccination_status']
     notes = request.form['notes']
 
-    health_record = create_health_record(pet_id, record_date, weight, vaccination_status, notes)
+    health_record = create_health_record(pet_id, record_date, weight, weight_unit, vaccination_status, notes)  
     print(health_record)
     flash('Health record added.')
 
@@ -190,11 +191,12 @@ def edit_health_record(record_id):
         return render_template('edit_health_record.html', health_record=health_record)
 
     record_date = request.form['record_date'] 
-    weight = request.form['weight'] 
+    weight = request.form['weight']
+    weight_unit = request.form['weight_unit'] 
     vaccination_status = request.form['vaccination_status']
     notes = request.form['notes']
 
-    update_health_record(health_record, record_date=record_date, weight=weight, vaccination_status=vaccination_status, notes=notes)
+    update_health_record(health_record, record_date=record_date, weight=weight, weight_unit=weight_unit, vaccination_status=vaccination_status, notes=notes)
     flash('Health record updated.')
 
     return redirect('/dashboard')  # Redirect to the Dashboard after updating the health record

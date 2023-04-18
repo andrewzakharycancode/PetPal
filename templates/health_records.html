@@ -20,7 +20,7 @@
       {% for record in health_records %}
         <tr>
           <td>{{ record.record_date.strftime('%B %d, %Y') }}</td>
-          <td>{{ record.weight }}</td>
+          <td>{{ record.weight }} {{ record.weight_unit }}</td> <!-- Display weight unit next to the weight -->
           <td>{{ record.vaccination_status }}</td>
           <td>{{ record.notes }}</td>
           <td>

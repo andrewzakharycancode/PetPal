@@ -68,10 +68,10 @@ def delete_pet(pet):
     db.session.commit()
 
 # HealthRecord CRUD operations
-def create_health_record(pet_id, record_date, weight=None, vaccination_status=None, notes=None):
+def create_health_record(pet_id, record_date, weight, weight_unit, vaccination_status, notes):
     """Create and return a new health record."""
     health_record = HealthRecord(pet_id=pet_id, record_date=record_date, weight=weight,
-                                  vaccination_status=vaccination_status, notes=notes)
+                                  vaccination_status=vaccination_status, weight_unit=weight_unit, notes=notes)
     db.session.add(health_record)
     db.session.commit()
 
@@ -89,6 +89,8 @@ def update_health_record(health_record, **kwargs):
     """Update health record information."""
     for key, value in kwargs.items():
         setattr(health_record, key, value)
+        if 'weight_unit' in kwargs:
+            health_record.weight_unit = kwargs['weight_unit']
     db.session.commit()
 
 def delete_health_record(health_record):

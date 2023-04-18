@@ -58,7 +58,8 @@ class HealthRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     pet_id = db.Column(db.Integer, db.ForeignKey("pets.id"), nullable=False)
     record_date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
-    weight = db.Column(db.Float, nullable=True)
+    weight = db.Column(db.Float, nullable=False)
+    weight_unit = db.Column(db.String, nullable=False)
     vaccination_status = db.Column(db.String(80), nullable=True)
     notes = db.Column(db.Text, nullable=True)
 

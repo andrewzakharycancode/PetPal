@@ -9,8 +9,14 @@
     <label for="record_date">Record Date:</label>
     <input type="date" name="record_date" value="{{ health_record.record_date }}" required>
     <br>
-    <label for="weight">Weight (lbs):</label>
-    <input type="number" name="weight" value="{{ health_record.weight }}" step="0.1">
+    <label for="weight">Weight:</label>
+    <input type="number" name="weight" value="{{ health_record.weight }}" step="0.01">
+    <br>
+    <label for="weight_unit">Weight Unit:</label>
+    <select name="weight_unit" required>
+        <option value="kg" {% if health_record.weight_unit == "kg" %}selected{% endif %}>kg</option>
+        <option value="lbs" {% if health_record.weight_unit == "lbs" %}selected{% endif %}>lbs</option>
+    </select>
     <br>
     <label for="vaccination_status">Vaccination Status:</label>
     <input type="text" name="vaccination_status" value="{{ health_record.vaccination_status }}">
