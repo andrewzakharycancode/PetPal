@@ -181,7 +181,11 @@ def add_health_record(pet_id):
 def view_health_records(pet_id):
     health_records= get_health_records_by_pet(pet_id)
     pet = get_pet_by_id(pet_id)
-    return render_template("health_records.html", pet=pet, health_records=health_records)
+    health_records_dict_list = []
+    for record in health_records:
+        health_records_dict_list.append(record.to_dict())
+    print(health_records_dict_list)
+    return render_template("health_records.html", pet=pet, health_records=health_records, health_records_dict_list=health_records_dict_list)
 
 @app.route('/edit_health_record/<int:record_id>', methods=['GET', 'POST'])
 def edit_health_record(record_id):

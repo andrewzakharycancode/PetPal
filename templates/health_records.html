@@ -13,7 +13,7 @@
         <th>Weight</th>
         <th>Vaccination Status</th>
         <th>Notes</th>
-        <th>Actions</th> <!-- Add a new header for actions -->
+        <th>Actions</th> 
       </tr>
     </thead>
     <tbody>
@@ -31,4 +31,65 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <!-- Add the canvas element for the weight chart -->
+  <canvas id="weightChart" width="400" height="200"></canvas>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Prepare the data for the chart
+  const weightData = JSON.parse('{{ health_records_dict_list | tojson }}') ;
+  const chartLabels = weightData.map(record => new Date(record.record_date)); // Parse the date string into a Date object
+  const chartWeights = weightData.map(record => record.weight);
+  const weightUnits = weightData.map(record => record.weight_unit);
+
+  // Get the canvas element
+  const ctx = document.getElementById('weightChart').getContext('2d');
+  console.log(chartWeights)
+
+  // Create the chart
+  const weightChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: 'Weight',
+          data: chartWeights,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 2,
+          pointRadius: 4,
+          fill: false,
+          tension: 0.1,
+        },
+      ],
+    },
+    // options: {
+    //   scales: {
+    //     x: {
+    //       type: 'time',
+    //       time: {
+    //         unit: 'month',
+    //         displayFormats: {
+    //           month: 'MMM YYYY',
+    //         },
+    //       },
+    //       title: {
+    //         display: true,
+    //         text: 'Date',
+    //       },
+    //     },
+    //     y: {
+    //       title: {
+    //         display: true,
+    //         text: 'Weight (' + (weightUnits[0] || 'kg') + ')',
+    //       },
+    //     },
+    //   },
+    // },
+  });
+</script>
 {% endblock %}

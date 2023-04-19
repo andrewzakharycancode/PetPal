@@ -63,6 +63,17 @@ class HealthRecord(db.Model):
     vaccination_status = db.Column(db.String(80), nullable=True)
     notes = db.Column(db.Text, nullable=True)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "pet_id": self.pet_id,
+            "record_date": self.record_date,
+            "weight": self.weight,
+            "weight_unit": self.weight_unit,
+            "vaccination_status": self.vaccination_status,
+            "notes": self.notes
+        }
+
 # Vet model representing the vets table in the database
 class Vet(db.Model):
     __tablename__ = "vets"
