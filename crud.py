@@ -93,10 +93,13 @@ def update_health_record(health_record, **kwargs):
             health_record.weight_unit = kwargs['weight_unit']
     db.session.commit()
 
-def delete_health_record(health_record):
-    """Delete a health record."""
+def delete_health_record_by_id(record_id):
+    """Delete a health record by its ID."""
+    health_record = get_health_record_by_id(record_id)
     db.session.delete(health_record)
     db.session.commit()
+
+
 
 # Vet CRUD operations
 def create_vet(name, address, phone_number, email=None, website=None, yelp_id=None):

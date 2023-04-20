@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify, g)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message) 
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id) 
 import requests
 import os
 from dotenv import load_dotenv
@@ -207,6 +207,20 @@ def edit_health_record(record_id):
 
 def get_health_record_by_id(record_id):
     return HealthRecord.query.get(record_id)
+
+# Delete health record
+@app.route('/pets/<int:pet_id>/health_records/delete/<int:record_id>', methods=['POST'])
+def delete_health_record(pet_id, record_id):
+    if 'user_id' not in session:
+        flash('Please log in to delete a health record.')
+        return redirect('/')
+
+    delete_health_record_by_id(record_id)
+    flash('Health record deleted!')
+
+    return redirect(f"/view_health_records/{pet_id}")
+
+
 
 # Search for vets
 @app.route('/vetfinder', methods=['GET', 'POST'])

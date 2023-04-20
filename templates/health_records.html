@@ -13,7 +13,7 @@
         <th>Weight</th>
         <th>Vaccination Status</th>
         <th>Notes</th>
-        <th>Actions</th> 
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -26,6 +26,10 @@
           <td>
             <!-- Add an "Edit" button for each health record -->
             <a href="{{ url_for('edit_health_record', record_id=record.id) }}" class="btn btn-sm btn-primary">Edit</a>
+            <!-- Add a "Delete" button for each health record -->
+            <form action="{{ url_for('delete_health_record', pet_id=pet.id, record_id=record.id) }}" method="POST" style="display:inline;">
+              <input value="Delete" type="submit" class="btn btn-sm btn-danger">
+            </form>
           </td>
         </tr>
       {% endfor %}
@@ -40,14 +44,13 @@
 {% block extra_js %}
 <script>
   // Prepare the data for the chart
-  const weightData = JSON.parse('{{ health_records_dict_list | tojson }}') ;
+  const weightData = {{ health_records_dict_list | tojson | safe }};
   const chartLabels = weightData.map(record => new Date(record.record_date)); // Parse the date string into a Date object
   const chartWeights = weightData.map(record => record.weight);
   const weightUnits = weightData.map(record => record.weight_unit);
 
   // Get the canvas element
   const ctx = document.getElementById('weightChart').getContext('2d');
-  console.log(chartWeights)
 
   // Create the chart
   const weightChart = new Chart(ctx, {
@@ -67,29 +70,6 @@
         },
       ],
     },
-    // options: {
-    //   scales: {
-    //     x: {
-    //       type: 'time',
-    //       time: {
-    //         unit: 'month',
-    //         displayFormats: {
-    //           month: 'MMM YYYY',
-    //         },
-    //       },
-    //       title: {
-    //         display: true,
-    //         text: 'Date',
-    //       },
-    //     },
-    //     y: {
-    //       title: {
-    //         display: true,
-    //         text: 'Weight (' + (weightUnits[0] || 'kg') + ')',
-    //       },
-    //     },
-    //   },
-    // },
   });
 </script>
 {% endblock %}
