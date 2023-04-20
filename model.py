@@ -97,6 +97,15 @@ class FavoriteVet(db.Model):
     notes = db.Column(db.Text, nullable=True)
     reviews = db.Column(db.Text, nullable=True)
 
+#ContactMessage model
+class ContactMessage(db.Model):
+    __tablename__ = "contact_messages"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    subject = db.Column(db.String(255), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+
 
 if __name__ == "__main__":
     from server import app

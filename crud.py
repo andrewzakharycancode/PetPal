@@ -1,5 +1,5 @@
 from typing import List
-from model import db, User, Pet, HealthRecord, Vet, FavoriteVet, connect_to_db
+from model import db, User, Pet, HealthRecord, Vet, FavoriteVet, ContactMessage, connect_to_db
 
 # User CRUD operations
 def create_user(username, email, password_hash, first_name, last_name, phone_number=None):
@@ -152,6 +152,28 @@ def update_favorite_vet(favorite_vet, **kwargs):
 def delete_favorite_vet(favorite_vet):
     """Delete a favorite vet."""
     db.session.delete(favorite_vet)
+    db.session.commit()
+
+# Add the new ContactMessage CRUD operations
+def create_contact_message(name, email, subject, message):
+    """Create and return a new contact message."""
+    contact_message = ContactMessage(name=name, email=email, subject=subject, message=message)
+    db.session.add(contact_message)
+    db.session.commit()
+
+    return contact_message
+
+def get_contact_message_by_id(contact_message_id):
+    """Return a contact message by their ID."""
+    return ContactMessage.query.get(contact_message_id)
+
+def get_all_contact_messages():
+    """Return all contact messages in the database."""
+    return ContactMessage.query.all()
+
+def delete_contact_message(contact_message):
+    """Delete a contact message."""
+    db.session.delete(contact_message)
     db.session.commit()
 
 if __name__ == "__main__":

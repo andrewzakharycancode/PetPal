@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify, g)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record) 
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message) 
 import requests
 import os
 from dotenv import load_dotenv
@@ -245,6 +245,26 @@ def add_favorite_vet():
         flash('Please log in to add a favorite vet.')
     return redirect('/')
 
+# Contact form
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        subject = request.form.get('subject')
+        message = request.form.get('message')
+
+        create_contact_message(name, email, subject, message)
+        return render_template('contact_success.html')
+
+    return render_template('contact.html')
+
+@app.route('/contact/success')
+def contact_success():
+    return render_template('contact_success.html')
+
+
+
 
 #Log out the user
 @app.route('/logout')
@@ -252,6 +272,7 @@ def logout():
     session.pop('user_id', None)
     flash('Logged out successfully.')
     return redirect('/')
+
 
 if __name__ == "__main__":
     connect_to_db(app)
