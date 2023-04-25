@@ -225,23 +225,23 @@ def delete_health_record(pet_id, record_id):
 # Search for vets
 @app.route('/vetfinder', methods=['GET', 'POST'])
 def search_vets():
+    page = int(request.args.get("page", 1))
+    offset = (page - 1) * 20
+    location = request.args.get("location", "")
+
     if request.method == 'POST':
         location = request.form.get("location")
-        url = f"https://api.yelp.com/v3/businesses/search?location={location}&term=vet&sort_by=best_match&limit=20"
 
+    if location:
+        url = f"https://api.yelp.com/v3/businesses/search?location={location}&term=vet&sort_by=rating&limit=20&offset={offset}"
         headers = {"accept": "application/json", "Authorization": f"Bearer {yelp_api_key}"}
-
         response = requests.get(url, headers=headers)
         data = response.json()  # Parse JSON response
-
         businesses = data.get("businesses", [])  # Extract businesses list
-        print(businesses)
-        print(data)
-        print(yelp_api_key)
+        return render_template('search_vets.html', businesses=businesses, location=location, page=page)
 
-        return render_template('search_vets.html', businesses=businesses)
     else:
-        return render_template('search_vets.html')
+        return render_template('search_vets.html', page=page)
 
 
 #View user's favorite vets

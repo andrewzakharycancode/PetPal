@@ -33,7 +33,6 @@ class User(db.Model):
 
     def check_password(self, password):
         return self.password_hash == password
-
     
 
 # Pet model representing the pets table in the database
@@ -105,6 +104,19 @@ class ContactMessage(db.Model):
     email = db.Column(db.String(120), nullable=False)
     subject = db.Column(db.String(255), nullable=False)
     message = db.Column(db.Text, nullable=False)
+
+class VetUser(db.Model):
+    """A vet user."""
+
+    __tablename__ = "vet_users"
+
+    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=True)
+
 
 
 if __name__ == "__main__":
