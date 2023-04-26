@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify, g)
-from model import db, connect_to_db, User, Pet, HealthRecord, Vet, FavoriteVet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id) 
+from model import db, connect_to_db, User, Pet, HealthRecord, Vet
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id, create_vet_user, get_vet_user_by_email) 
 import requests
 import os
 from dotenv import load_dotenv
@@ -244,21 +244,6 @@ def search_vets():
         return render_template('search_vets.html', page=page)
 
 
-#View user's favorite vets
-@app.route('/favorite_vets')
-def view_favorite_vets():
-    if 'user_id' not in session:
-        flash('Please log in to view your favorite vets.')
-    return redirect('/')
-
-
-# Add a vet to the user's favorite vets
-@app.route('/add_favorite_vet', methods=['POST'])
-def add_favorite_vet():
-    if 'user_id' not in session:
-        flash('Please log in to add a favorite vet.')
-    return redirect('/')
-
 # Contact form
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -286,6 +271,37 @@ def logout():
     session.pop('user_id', None)
     flash('Logged out successfully.')
     return redirect('/')
+
+
+# Vet login route
+@app.route('/vet_portal', methods=['GET', 'POST'])
+def vet_login():
+    if request.method == 'GET':
+        return render_template('vet_portal.html')
+
+    email = request.form['email']
+    password = request.form['password']
+
+    vet_user = get_vet_user_by_email(email)
+
+    if not vet_user or not vet_user.check_password(password):
+        flash('Invalid email or password. Please try again.')
+        return redirect('/vet_portal')
+    else:
+        session['vet_user_id'] = vet_user.id
+        flash(f'Welcome, {vet_user.vet.name}!')
+        return redirect('/vet_dashboard')
+
+@app.route('/vet_dashboard')
+def vet_dashboard():
+    if 'vet_user_id' not in session:
+        flash('Please log in as a vet to view your dashboard.')
+        return redirect('/vet_portal')
+
+    return render_template('vet_dashboard.html')
+
+
+
 
 
 if __name__ == "__main__":

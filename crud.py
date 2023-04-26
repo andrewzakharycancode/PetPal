@@ -1,5 +1,5 @@
 from typing import List
-from model import db, User, Pet, HealthRecord, Vet, FavoriteVet, ContactMessage, connect_to_db
+from model import db, User, Pet, HealthRecord, Vet, ContactMessage, connect_to_db
 
 # User CRUD operations
 def create_user(username, email, password_hash, first_name, last_name, phone_number=None):
@@ -129,33 +129,21 @@ def delete_vet(vet):
     db.session.delete(vet)
     db.session.commit()
 
-# FavoriteVet CRUD operations
-def create_favorite_vet(user, vet, notes=None, reviews=None):
-    """Create and return a new favorite vet."""
-    favorite_vet = FavoriteVet(user=user, vet=vet, notes=notes, reviews=reviews)
-    db.session.add(favorite_vet)
+#VetPortal
+
+def create_vet_user(email, password_hash, vet_id):
+    vet_user = VetUser(email=email, password_hash=password_hash, vet_id=vet_id)
+    db.session.add(vet_user)
     db.session.commit()
 
-    return favorite_vet
+    return vet_user
 
-def get_favorite_vet_by_id(favorite_vet_id):
-    """Return a favorite vet by their ID."""
-    return FavoriteVet.query.get(favorite_vet_id)
+def get_vet_user_by_email(email):
+    return VetUser.query.filter_by(email=email).first()
 
-def get_all_favorite_vets():
-    """Return all favorite vets in the database."""
-    return FavoriteVet.query.all()
 
-def update_favorite_vet(favorite_vet, **kwargs):
-    """Update favorite vet information."""
-    for key, value in kwargs.items():
-        setattr(favorite_vet, key, value)
-    db.session.commit()
 
-def delete_favorite_vet(favorite_vet):
-    """Delete a favorite vet."""
-    db.session.delete(favorite_vet)
-    db.session.commit()
+
 
 # Add the new ContactMessage CRUD operations
 def create_contact_message(name, email, subject, message):
