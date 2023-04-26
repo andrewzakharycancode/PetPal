@@ -25,6 +25,18 @@
                     <p class="card-text">{{ business.location.address1 }}, {{ business.location.city }}, {{ business.location.zip_code }}</p>
                     <p class="card-text">Phone: {{ business.phone }}</p>
                     <a href="{{ business.url }}" class="card-link" target="_blank">View on Yelp</a>
+                    
+                    <form class="send-to-me-form" method="POST" action="{{ url_for('send_vet_to_user') }}" style="display: none;">
+                        <input type="hidden" name="vet_name" value="{{ business.name }}">
+                        <input type="hidden" name="vet_address" value="{{ ', '.join(business.location.display_address) }}">
+                        <input type="hidden" name="vet_phone" value="{{ business.display_phone }}">
+                        <button type="submit" class="btn btn-primary">Send to Me</button>
+                    </form>
+                    {% if g.user %}
+                    <button class="btn btn-primary send-to-me-btn">Send to Me via text</button>
+                    {% else %}
+                    <a class="btn btn-primary" href="/">Log in to send</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -38,4 +50,26 @@
         <a href="{{ url_for('search_vets', location=location, page=page+1) }}" class="btn btn-secondary">See more results</a>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.send-to-me-btn').click(function() {
+        const form = $(this).siblings('.send-to-me-form');
+        const formData = form.serialize();
+
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                alert('Vet info sent to your phone number.');
+            },
+            error: function(error) {
+                alert('An error occurred. Please try again.');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

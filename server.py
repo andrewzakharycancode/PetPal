@@ -1,11 +1,18 @@
-from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify, g)
+from flask import (Flask, json, render_template, request, flash, session, redirect, url_for, jsonify, g)
 from model import db, connect_to_db, User, Pet, HealthRecord, Vet
 from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id, create_vet_user, get_vet_user_by_email) 
 import requests
 import os
+TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+
+from twilio.rest import Client
+
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 # Read the Yelp API key from the environment variable
 yelp_api_key = os.getenv("YELP_API_KEY")
@@ -242,6 +249,40 @@ def search_vets():
 
     else:
         return render_template('search_vets.html', page=page)
+    
+#Send Vet to user
+@app.route('/send_vet_to_user', methods=['POST'])
+def send_vet_to_user():
+    vet_name = request.form['vet_name']
+    vet_address = request.form['vet_address']
+    vet_phone = request.form['vet_phone']
+    
+    message = f"Vet Info: {vet_name}, {vet_address}, {vet_phone}"
+    
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+    # Debugging: print values to check if they are correct
+    print(f"Vet Name: {vet_name}")
+    print(f"Vet Address: {vet_address}")
+    print(f"Vet Phone: {vet_phone}")
+    print(f"Twilio Account SID: {TWILIO_ACCOUNT_SID}")
+    print(f"Twilio Auth Token: {TWILIO_AUTH_TOKEN}")
+    print(f"Twilio Phone Number: {TWILIO_PHONE_NUMBER}")
+    
+    try:
+        client.messages.create(
+            body=message,
+            from_=+18449790287,
+            to=g.user.phone_number
+        )
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'An error occurred while sending the SMS.'}), 500
+    
+    return jsonify({'success': 'Vet info sent successfully.'})
+
+
+    
 
 
 # Contact form
