@@ -57,7 +57,8 @@ def update_pet(pet, **kwargs):
         setattr(pet, key, value)
     db.session.commit()
 
-def get_health_records_by_pet(pet_id: int) -> List[HealthRecord]:
+# def get_health_records_by_pet(pet_id: int) -> List[HealthRecord]:
+def get_health_records_by_pet(pet_id):
     """Return all health records for a specific pet."""
     return HealthRecord.query.filter(HealthRecord.pet_id == pet_id).all()
    
@@ -129,17 +130,17 @@ def delete_vet(vet):
     db.session.delete(vet)
     db.session.commit()
 
-#VetPortal
+# #VetPortal
 
-def create_vet_user(email, password_hash, vet_id):
-    vet_user = VetUser(email=email, password_hash=password_hash, vet_id=vet_id)
-    db.session.add(vet_user)
-    db.session.commit()
+# def create_vet_user(email, password_hash, vet_id):
+#     vet_user = VetUser(email=email, password_hash=password_hash, vet_id=vet_id)
+#     db.session.add(vet_user)
+#     db.session.commit()
 
-    return vet_user
+#     return vet_user
 
-def get_vet_user_by_email(email):
-    return VetUser.query.filter_by(email=email).first()
+# def get_vet_user_by_email(email):
+#     return VetUser.query.filter_by(email=email).first()
 
 
 

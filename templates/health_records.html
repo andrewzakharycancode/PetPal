@@ -45,6 +45,8 @@
 <script>
   // Prepare the data for the chart
   const weightData = {{ health_records_dict_list | tojson | safe }};
+  // console.log("***************")
+  // console.log(weightData)
   const chartLabels = weightData.map(record => new Date(record.record_date)); // Parse the date string into a Date object
   const chartWeights = weightData.map(record => record.weight);
   const weightUnits = weightData.map(record => record.weight_unit);

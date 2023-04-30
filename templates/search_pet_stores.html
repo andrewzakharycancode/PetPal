@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container">
-    <h1>Search Vets</h1>
+    <h1>Search Pet Stores</h1>
     
-    <form action="/vetfinder" method="POST">
+    <form action="/petstores" method="POST">
         <div class="mb-3">
             <label for="location" class="form-label">Location:</label>
             <input type="text" name="location" class="form-control" required>
@@ -26,10 +26,10 @@
                     <p class="card-text">Phone: {{ business.phone }}</p>
                     <a href="{{ business.url }}" class="card-link" target="_blank">View on Yelp</a>
                     
-                    <form class="send-to-me-form" method="POST" action="{{ url_for('send_vet_to_user') }}" style="display: none;">
-                        <input type="hidden" name="vet_name" value="{{ business.name }}">
-                        <input type="hidden" name="vet_address" value="{{ ', '.join(business.location.display_address) }}">
-                        <input type="hidden" name="vet_phone" value="{{ business.display_phone }}">
+                    <form class="send-to-me-form" method="POST" action="{{ url_for('send_pet_store_to_user') }}" style="display: none;">
+                        <input type="hidden" name="store_name" value="{{ business.name }}">
+                        <input type="hidden" name="store_address" value="{{ ', '.join(business.location.display_address) }}">
+                        <input type="hidden" name="store_phone" value="{{ business.display_phone }}">
                         <button type="submit" class="btn btn-primary">Send to Me</button>
                     </form>
                     {% if g.user %}
@@ -45,9 +45,9 @@
     
     <div class="d-flex justify-content-between">
         {% if page > 1 %}
-        <a href="{{ url_for('search_vets', location=location, page=page-1) }}" class="btn btn-secondary">Previous results</a>
+        <a href="{{ url_for('search_pet_stores', location=location, page=page-1) }}" class="btn btn-secondary">Previous results</a>
         {% endif %}
-        <a href="{{ url_for('search_vets', location=location, page=page+1) }}" class="btn btn-secondary">See more results</a>
+        <a href="{{ url_for('search_pet_stores', location=location, page=page+1) }}" class="btn btn-secondary">See more results</a>
     </div>
 </div>
 
@@ -63,7 +63,7 @@ $(document).ready(function() {
             method: 'POST',
             data: formData,
             success: function(response) {
-                alert('Vet info sent to your phone number.');
+                alert('Pet store info sent to your phone number.');
             },
             error: function(error) {
                 alert('An error occurred. Please try again.');

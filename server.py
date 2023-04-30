@@ -1,6 +1,6 @@
 from flask import (Flask, json, render_template, request, flash, session, redirect, url_for, jsonify, g)
-from model import db, connect_to_db, User, Pet, HealthRecord, Vet
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id, create_vet_user, get_vet_user_by_email) 
+from model import (db, connect_to_db, User, Pet, HealthRecord, Vet)
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id) 
 import requests
 import os
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
@@ -341,6 +341,78 @@ def vet_dashboard():
 
     return render_template('vet_dashboard.html')
 
+
+#Forgot password
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        # Add the code to send the password reset email here
+        return render_template('reset_password_sent.html')
+    return render_template('forgot_password.html')
+
+
+
+
+#Updating password
+@app.route("/reset_password/<email>", methods=["GET", "POST"])
+def reset_password(email):
+    if request.method == "POST":
+        new_password = request.form["new_password"]
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password_hash = generate_password_hash(new_password)
+            db.session.commit()
+            flash("Your password has been updated. You can now log in with your new password.", "success")
+            return redirect(url_for("login"))
+        else:
+            flash("An error occurred. Please try again.", "error")
+
+    return render_template("reset_password.html", email=email)
+
+#Petstore search 
+@app.route('/petstores', methods=['GET', 'POST'])
+def search_pet_stores():
+    page = int(request.args.get("page", 1))
+    offset = (page - 1) * 20
+    location = request.args.get("location", "")
+
+    if request.method == 'POST':
+        location = request.form.get("location")
+
+    if location:
+        url = f"https://api.yelp.com/v3/businesses/search?location={location}&term=pet+store&sort_by=rating&limit=20&offset={offset}"
+        headers = {"accept": "application/json", "Authorization": f"Bearer {yelp_api_key}"}
+        response = requests.get(url, headers=headers)
+        data = response.json()
+        businesses = data.get("businesses", [])
+        return render_template('search_pet_stores.html', businesses=businesses, location=location, page=page)
+
+    else:
+        return render_template('search_pet_stores.html', page=page)
+    
+#Send pet store to user
+@app.route('/send_pet_store_to_user', methods=['POST'])
+def send_pet_store_to_user():
+    store_name = request.form['store_name']
+    store_address = request.form['store_address']
+    store_phone = request.form['store_phone']
+    
+    message = f"Pet Store Info: {store_name}, {store_address}, {store_phone}"
+    
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)    
+
+    try:
+        client.messages.create(
+            body=message,
+            from_=+18449790287,
+            to=g.user.phone_number
+        )
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'An error occurred while sending the SMS.'}), 500
+    
+    return jsonify({'success': 'Pet store info sent successfully.'})
 
 
 
