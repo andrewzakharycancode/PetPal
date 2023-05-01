@@ -6,21 +6,34 @@
   <h2>Your Pets</h2>
   <ul>
     {% for pet in pets %}
-      <li>
+      <li class="pet-list-item">
         <a href="{{ url_for('view_health_records', pet_id=pet.id) }}">{{ pet.name }}</a>
-        <a href="{{ url_for('add_health_record', pet_id=pet.id) }}" class="btn btn-info btn-sm">Add Health Record</a>
+        <a href="{{ url_for('add_health_record', pet_id=pet.id) }}" class="btn">Add Health Record</a>
       </li>
     {% endfor %}
   </ul>
 
-  <h2>Add a new pet</h2>
-  <form action="{{ url_for('add_pet') }}" method="POST">
+  <div class="add-pet-container">
+    <button class="btn" id="addPetButton">Add a new pet</button>
+    <form id="addPetForm" class="add-pet-form" action="{{ url_for('add_pet') }}" method="POST">
       <label for="pet_name">Pet Name:</label>
       <input type="text" name="pet_name" required>
-      <br><br>
+      <br>
       <label for="pet_type">Pet Species:</label>
       <input type="text" name="pet_species" required>
-      <br><br>
+      <br>
       <input type="submit" value="Add Pet">
-  </form>
+    </form>
+  </div>
+  
+  <script>
+    document.getElementById("addPetButton").addEventListener("click", function() {
+      const form = document.getElementById("addPetForm");
+      if (form.style.display === "none") {
+        form.style.display = "block";
+      } else {
+        form.style.display = "none";
+      }
+    });
+  </script>
 {% endblock %}

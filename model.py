@@ -44,7 +44,7 @@ class Pet(db.Model):
     species = db.Column(db.String(80), nullable=False)
     breed = db.Column(db.String(80), nullable=True)
     birthdate = db.Column(db.Date, nullable=True)
-    photo = db.Column(db.String(255), nullable=True)
+    photo = db.Column(db.String(255), nullable=True) #photo will be a url and can be saved on pet - upload file button, user uploads file, uploaded to cloudenary api, save the link as photo in the database (pet.photo will be the url that cloudenary gives me)
 
     user = db.relationship("User", back_populates="pets")
 

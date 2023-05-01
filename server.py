@@ -415,8 +415,6 @@ def send_pet_store_to_user():
     return jsonify({'success': 'Pet store info sent successfully.'})
 
 
-
-
 if __name__ == "__main__":
     connect_to_db(app)
     app.run(host="0.0.0.0", debug=True) 
