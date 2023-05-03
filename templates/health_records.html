@@ -77,6 +77,22 @@
         },
       ],
     },
-  });
+    options: {
+      scales: {
+        x: {
+          type: 'time',
+          ticks: {
+            source: 'data'
+          },
+          time: {
+            unit         : "day",
+        displayFormats: {
+          day: 'MM/DD/YYYY'
+        }
+      }
+    }
+  }
+}
+});
 </script>
 {% endblock %}

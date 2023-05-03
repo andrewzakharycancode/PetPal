@@ -1,7 +1,7 @@
 from flask import (Flask, json, render_template, request, flash, session, redirect, url_for, jsonify, g)
 from model import (db, connect_to_db, User, Pet, HealthRecord, Vet)
 from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id)
-
+from datetime import datetime
 import os
 import cloudinary
 import cloudinary.uploader
@@ -133,6 +133,8 @@ def dashboard():
         return redirect('/')
 
     pets = Pet.query.filter_by(user_id=session["user_id"]).all()
+    for pet in pets:
+        print(pet.birthdate)
     return render_template('dashboard.html', pets=pets)
 
 
@@ -161,7 +163,7 @@ def add_pet():
 
     if birthdate:
         birthdate = datetime.strptime(birthdate, "%Y-%m-%d").date()
-
+    print(birthdate)
     user_id = session["user_id"]
 
     # Create a new pet and add it to the database
