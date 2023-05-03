@@ -2,6 +2,13 @@
 
 {% block content %}
   <h1>Health Records for {{ pet.name }}</h1>
+  {% if pet.photo_url %}
+    <img src="{{ pet.photo_url }}" alt="{{ pet.name }}'s photo" class="pet-photo">
+  {% endif %}
+
+  <p>Species: {{ pet.species }}</p>
+  <p>Breed: {{ pet.breed }}</p>
+  <p>Approximate Birthdate: {{ pet.birthdate.strftime('%B %d, %Y') if pet.birthdate else '' }}</p>
 
   <!-- Add a "New Health Record" button -->
   <a href="{{ url_for('add_health_record', pet_id=pet.id) }}" class="btn btn-primary">New Health Record</a>
@@ -45,8 +52,6 @@
 <script>
   // Prepare the data for the chart
   const weightData = {{ health_records_dict_list | tojson | safe }};
-  // console.log("***************")
-  // console.log(weightData)
   const chartLabels = weightData.map(record => new Date(record.record_date)); // Parse the date string into a Date object
   const chartWeights = weightData.map(record => record.weight);
   const weightUnits = weightData.map(record => record.weight_unit);

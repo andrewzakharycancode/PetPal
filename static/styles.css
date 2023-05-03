@@ -109,6 +109,15 @@ ul {
     align-items: center;
     color: #fff;
   }
+
+  .pet-photo {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+  }
+  
   
   .login-card {
     background-color: rgba(255, 255, 255, 0.9);

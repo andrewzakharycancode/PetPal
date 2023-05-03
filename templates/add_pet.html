@@ -1,22 +1,29 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
+  <h1>Add a Pet</h1>
 
-<h1>Add Health Record for {{ pet.name }}</h1>
-
-<form action="/add_health_record" method="POST">
-    <input type="hidden" name="pet_id" value="{{ pet.id }}">
-    <label for="record_date">Record Date:</label>
-    <input type="date" name="record_date" required>
-    <br>
-    <label for="weight">Weight (lbs):</label>
-    <input type="number" name="weight" step="0.1">
-    <br>
-    <label for="vaccination_status">Vaccination Status:</label>
-    <input type="text" name="vaccination_status">
-    <br>
-    <label for="notes">Notes:</label>
-    <textarea name="notes"></textarea>
-    <br>
-    <input type="submit" value="Add Record">
-</form>
+  <form action="{{ url_for('add_pet') }}" method="POST">
+    <div class="form-group">
+      <label for="pet_name">Pet Name</label>
+      <input type="text" class="form-control" id="pet_name" name="pet_name" required>
+    </div>
+    <div class="form-group">
+      <label for="pet_species">Species</label>
+      <input type="text" class="form-control" id="pet_species" name="pet_species" required>
+    </div>
+    <div class="form-group">
+      <label for="pet_breed">Breed</label>
+      <input type="text" class="form-control" id="pet_breed" name="pet_breed">
+    </div>
+    <div class="form-group">
+      <label for="birthdate">Approximate Birthdate</label>
+      <input type="date" class="form-control" id="birthdate" name="birthdate">
+    </div>
+    <div class="form-group">
+      <label for="photo_url">Photo URL</label>
+      <input type="url" class="form-control" id="photo_url" name="photo_url">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% endblock %}

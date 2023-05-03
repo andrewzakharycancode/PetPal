@@ -1,8 +1,21 @@
 from flask import (Flask, json, render_template, request, flash, session, redirect, url_for, jsonify, g)
 from model import (db, connect_to_db, User, Pet, HealthRecord, Vet)
-from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id) 
-import requests
+from crud import (create_user, get_user_by_id, get_pet_by_id, get_user_by_email, create_pet, create_health_record, get_health_records_by_pet, update_health_record, create_contact_message, delete_health_record_by_id)
+
 import os
+import cloudinary
+import cloudinary.uploader
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET")
+CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET
+)
+
+import requests
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
@@ -12,6 +25,7 @@ from twilio.rest import Client
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 
 # Read the Yelp API key from the environment variable
@@ -141,29 +155,79 @@ def add_pet():
 
     # Get the form data
     pet_name = request.form["pet_name"]
-    pet_species = request.form["pet_species"] 
+    pet_species = request.form["pet_species"]
+    pet_breed = request.form["pet_breed"]
+    birthdate = request.form.get("birthdate")  # Use the get method here
+
+    if birthdate:
+        birthdate = datetime.strptime(birthdate, "%Y-%m-%d").date()
+
     user_id = session["user_id"]
 
     # Create a new pet and add it to the database
-    # create_pet = Pet(name=pet_name, species=pet_species, owner_id=user_id)  # Change this line
-    new_pet = create_pet(user_id, pet_name, pet_species)
+    new_pet = Pet(
+        user_id=user_id,
+        name=pet_name,
+        species=pet_species,
+        breed=pet_breed,
+        birthdate=birthdate,
+    )
     db.session.add(new_pet)
     db.session.commit()
 
     flash(f"{pet_name} has been added to your pets!")
     return redirect("/dashboard")
 
-# @app.route('/health_records/<int:pet_id>')
-# def view_health_records(pet_id):
-#     pet = get_pet_by_id(pet_id)
-#     health_records = get_health_records_by_pet(pet_id)
-#     return render_template('health_records.html', pet=pet, health_records=health_records)
 
-# @app.route('/health_records/<int:pet_id>')
-# def view_health_records(pet_id):
-#     pet = get_pet_by_id(pet_id)
+# @app.route("/add_pet", methods=["POST"])
+# def add_pet():
+#     """Add a pet for the logged-in user."""
 
-#     return render_template('health_records.html', pet=pet)
+#     # Get the form data
+#     pet_name = request.form["pet_name"]
+#     pet_species = request.form["pet_species"]
+#     pet_breed = request.form["pet_breed"]
+#     birthdate = request.form["birthdate"]
+    
+#     if birthdate:
+#         birthdate = datetime.strptime(birthdate, "%Y-%m-%d").date()
+
+#     user_id = session["user_id"]
+
+#     # Create a new pet and add it to the database
+#     new_pet = Pet(
+#         user_id=user_id,
+#         name=pet_name,
+#         species=pet_species,
+#         breed=pet_breed,
+#         birthdate=birthdate,
+#     )
+#     db.session.add(new_pet)
+#     db.session.commit()
+
+#     flash(f"{pet_name} has been added to your pets!")
+#     return redirect("/dashboard")
+
+
+
+# @app.route("/add_pet", methods=["POST"])
+# def add_pet():
+#     """Add a pet for the logged-in user."""
+
+#     # Get the form data
+#     pet_name = request.form["pet_name"]
+#     pet_species = request.form["pet_species"] 
+#     user_id = session["user_id"]
+
+#     # Create a new pet and add it to the database
+#     # create_pet = Pet(name=pet_name, species=pet_species, owner_id=user_id)  # Change this line
+#     new_pet = create_pet(user_id, pet_name, pet_species)
+#     db.session.add(new_pet)
+#     db.session.commit()
+
+#     flash(f"{pet_name} has been added to your pets!")
+    return redirect("/dashboard")
+
 
 @app.route('/add_health_record/<int:pet_id>', methods=['GET', 'POST'])
 def add_health_record(pet_id):
@@ -413,6 +477,38 @@ def send_pet_store_to_user():
         return jsonify({'error': 'An error occurred while sending the SMS.'}), 500
     
     return jsonify({'success': 'Pet store info sent successfully.'})
+
+
+#Upload a pet photo
+@app.route('/upload_pet_photo/<int:pet_id>', methods=['POST'])
+def upload_pet_photo(pet_id):
+    if 'user_id' not in session:
+        flash('Please log in to upload a pet photo.')
+        return redirect('/')
+
+    pet = get_pet_by_id(pet_id)
+    if not pet:
+        flash('Pet not found.')
+        return redirect('/dashboard')
+
+    # Check if the request has a file
+    if 'file' not in request.files:
+        flash('No file selected.')
+        return redirect('/dashboard')
+
+    file = request.files['file']
+
+    if file.filename == '':
+        flash('No file selected.')
+        return redirect('/dashboard')
+
+    if file:
+        result = cloudinary.uploader.upload(file)
+        pet.photo = result['secure_url']
+        db.session.commit()
+        flash('Pet photo uploaded successfully.')
+        return redirect('/dashboard')
+
 
 
 if __name__ == "__main__":

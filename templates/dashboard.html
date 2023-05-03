@@ -8,7 +8,18 @@
     {% for pet in pets %}
       <li class="pet-list-item">
         <a href="{{ url_for('view_health_records', pet_id=pet.id) }}">{{ pet.name }}</a>
+        {% if pet.photo %}
+          <img src="{{ pet.photo }}" alt="{{ pet.name }}'s photo" width="100" height="100">
+        {% endif %}
+        <span>{{ pet.species }}</span>
+        <span>{{ pet.breed }}</span>
+        <span>{{ pet.birthdate.strftime('%B %d, %Y') if pet.birthdate else '' }}</span>
         <a href="{{ url_for('add_health_record', pet_id=pet.id) }}" class="btn">Add Health Record</a>
+        
+        <form action="{{ url_for('upload_pet_photo', pet_id=pet.id) }}" method="POST" enctype="multipart/form-data">
+          <input type="file" name="file">
+          <button type="submit">Upload Pet Photo</button>
+        </form>
       </li>
     {% endfor %}
   </ul>
@@ -19,8 +30,14 @@
       <label for="pet_name">Pet Name:</label>
       <input type="text" name="pet_name" required>
       <br>
-      <label for="pet_type">Pet Species:</label>
+      <label for="pet_species">Pet Species:</label>
       <input type="text" name="pet_species" required>
+      <br>
+      <label for="pet_breed">Pet Breed:</label>
+      <input type="text" name="pet_breed">
+      <br>
+      <label for="pet_birthdate">Approximate Birthdate:</label>
+      <input type="date" name="pet_birthdate">
       <br>
       <input type="submit" value="Add Pet">
     </form>
