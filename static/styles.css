@@ -69,7 +69,7 @@ a:hover {
 /* Dashboard styles */
 
 h1 {
-    margin-bottom: 2rem;
+    margin: 1em 0 .5em;
     font-size: 2.5rem;
     font-weight: bold;
     color: #000;
@@ -162,7 +162,7 @@ ul {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    /* height: 30vh; */
     background-color: var(--color-background);
     color: var(--color-text);
 }
@@ -190,15 +190,16 @@ ul {
 
 
 .login-card {
-width: 30%;
+/* width: 30%; */
 background-color: #fff;
 padding: 2rem;
 border-radius: 5px;
+margin-right: 0px;
 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .login-card {
-    width: 30%;
+    /* width: 30%; */
     background-color: var(--color-white);
     padding: 2rem;
     border-radius: 5px;
@@ -300,3 +301,77 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--color-primary-dark);
 }
+
+.clifford-image {
+    background-image: url('https://res.cloudinary.com/dnjtvpohe/image/upload/v1683216003/new_clifford_byu85m.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    position:relative;
+    top: 30px; 
+    left: 0px;
+    width: 250px;
+    aspect-ratio: 640/480;
+    /* height: 480px; */
+    /* margin-left: -125px; */
+    margin-right: 0px;
+    z-index: 1; 
+  }
+  
+  /* Add these new styles to the end of your styles.css file */
+
+.features-section {
+    padding: 2rem 0;
+  }
+  
+  .feature {
+    margin-bottom: 2rem;
+  }
+  
+  .feature h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+  }
+  
+  .feature p {
+    font-size: 1.25rem;
+    line-height: 1.5;
+  }
+  
+  .fade-in {
+    opacity: 0;
+    animation: fadeIn 1s ease-in forwards;
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  .content-wrapper {
+    display: inline-flex;
+  }
+  
+  .left-side {
+    width: 50%;
+  }
+  
+  .right-side {
+    width: 50%;
+  }
+
+  .feature-title {
+    font-size: .5rem;
+  }
+  
+  .feature-text {
+    font-size: .5rem;
+  }
+  
+  

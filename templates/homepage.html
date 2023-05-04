@@ -1,30 +1,81 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<!-- <div class="container"> -->
+
+
+<div class="row">
   <div class="hero-section">
-    <div class="container">
-      <div class="hero-text">
-        <h1>Welcome to PetPal</h1>
-        <p>Your one-stop platform for all your pet's needs</p>
-      </div>
-      <div class="login-card">
-        <h2>Login</h2>
-        <form action="/login" method="POST">
-          <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input type="email" name="email" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password:</label>
-            <input type="password" name="password" class="form-control" required>
-          </div>
-          <input type="submit" value="Log in" class="btn btn-primary">
-        </form>
-        <br>
-        <a href="/register">Create an account</a>
-        <br>
-        <a href="{{ url_for('forgot_password') }}">Forgot Password?</a>
-      </div>
+    <div class="hero-text">
+      <h1 class="fade-in">Welcome to PetPal</h1>
+      <p class="fade-in">Your one-stop platform for all your pet's needs</p>
     </div>
   </div>
+</div>
+
+<div class="row">
+
+  <div class="col-5">
+
+
+    <div class="clifford-image fade-in"></div>
+    <div class="login-card fade-in">
+      <h2>Login</h2>
+      <form action="/login" method="POST">
+        <div class="">
+          <label for="email" class="form-label">Email:</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="">
+          <label for="password" class="form-label">Password:</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn">Login</button>
+        </div>
+      </form>
+      <div class="button-group">
+        <a href="/register" class="btn">Sign up</a>
+        <a href="/forgot-password" class="btn">Forgot password?</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-7">
+
+
+    <div class="features-section">
+      <div class="container">
+        <div class="feature fade-in">
+          <h2>Easily Track your Shelter's Guests and their Health</h2>
+          <p>With PetPal, you can keep track of all the pets in your shelter and monitor their health status, ensuring
+            they receive the best care possible.</p>
+        </div>
+        <div class="feature fade-in">
+          <h2>Find the Perfect Vet Referral</h2>
+          <p>Our platform connects you with top-rated veterinarians in your area, making it easy to find the perfect
+            match for your guests' needs.</p>
+        </div>
+        <div class="feature fade-in">
+          <h2>Partner with Top Rated Resource Providers</h2>
+          <p>Gain access to a network of high-quality pet product and service providers to ensure your shelter is
+            well-stocked and well-supported.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+</div>
+<!--       
+      </div>
+    </div>
+  </div> -->
+
+<!-- </div> -->
 {% endblock %}
