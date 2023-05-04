@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <div class="dashboard-content">
+  </div>
+ 
   <h1>Dashboard</h1>
 
   <h2>Your Pets</h2>
@@ -19,9 +22,9 @@
           <div class="card-body">
             <h5 class="card-title">{{ pet.name }}</h5>
             <p class="card-text">
-              {{ pet.species }}<br>
-              {{ pet.breed }}<br>
-              {{ pet.birthdate.strftime('%B %d, %Y') if pet.birthdate else '' }}
+              <strong>Species:</strong> {{ pet.species }}<br>
+              <strong>Breed:</strong> {{ pet.breed or 'Unknown' }}<br>
+              <strong>Approximate Birthdate:</strong> {{ pet.birthdate.strftime('%B %d, %Y') if pet.birthdate else 'Unknown' }}
             </p>
             <a href="{{ url_for('view_health_records', pet_id=pet.id) }}" class="btn btn-primary">View Health Records</a>
             <a href="{{ url_for('add_health_record', pet_id=pet.id) }}" class="btn btn-secondary">Add Health Record</a>
