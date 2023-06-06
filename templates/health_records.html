@@ -52,6 +52,7 @@
 <script>
   // Prepare the data for the chart
   const weightData = {{ health_records_dict_list | tojson | safe }};
+  // already had the data conveniently in the jinja  - study up on fetch on what I would have done. If done with fetch, another route would have been needed to fetch the route, server route to return a json string to use. This was a faster choice in the moment bc I would have had to translate 
   const chartLabels = weightData.map(record => new Date(record.record_date)); // Parse the date string into a Date object
   const chartWeights = weightData.map(record => record.weight);
   const weightUnits = weightData.map(record => record.weight_unit);

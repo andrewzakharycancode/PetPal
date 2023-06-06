@@ -45,6 +45,7 @@ class Pet(db.Model):
     breed = db.Column(db.String(80), nullable=True)
     birthdate = db.Column(db.Date, nullable=True)
     photo = db.Column(db.String(255), nullable=True) #photo will be a url and can be saved on pet - upload file button, user uploads file, uploaded to cloudenary api, save the link as photo in the database (pet.photo will be the url that cloudenary gives me)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # new field for storing creation time
 
     user = db.relationship("User", back_populates="pets")
 

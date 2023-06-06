@@ -122,8 +122,6 @@ def login_user():
         session['user_id'] = user.id
         flash(f'Welcome, {user.first_name}!')
         return redirect('/dashboard')
-
-
     
 
 @app.route('/dashboard')
@@ -132,10 +130,31 @@ def dashboard():
         flash('Please log in to view your dashboard.')
         return redirect('/')
 
-    pets = Pet.query.filter_by(user_id=session["user_id"]).all()
-    for pet in pets:
-        print(pet.birthdate)
+    sort_by = request.args.get('sort_by', default='recently_added', type=str)  # default sorting field is 'recently_added'
+
+    sorting_options = {
+        'longest_tenured': Pet.created_at,
+        'recently_added': db.desc(Pet.created_at),
+        'alphabetically': Pet.name,
+        'reverse_alphabetically': db.desc(Pet.name)
+    }
+
+    pets = Pet.query.filter_by(user_id=session["user_id"]).order_by(sorting_options.get(sort_by, Pet.created_at.desc())).all()
+
     return render_template('dashboard.html', pets=pets)
+
+
+
+# @app.route('/dashboard')
+# def dashboard():
+#     if 'user_id' not in session:
+#         flash('Please log in to view your dashboard.')
+#         return redirect('/')
+
+#     pets = Pet.query.filter_by(user_id=session["user_id"]).all()
+#     for pet in pets:
+#         print(pet.birthdate)
+#     return render_template('dashboard.html', pets=pets)
 
 
 # View all pets of the user
